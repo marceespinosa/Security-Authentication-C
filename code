@@ -1,0 +1,210 @@
+/*
+This Program is used to develop a security authenticaation based on an access code of a  digit number between 0-9, it will encrypt and decrypt the number and then compare it to an authorised acess code. 
+
+Created by Ana Marcela Espinosa 
+Student number C20306516
+March 2nd 2021
+
+*/
+
+#include <stdio.h>
+
+#define PIN 4
+//Funcion names for each of the menu options
+ int option1(int user_pin[PIN]);
+ int option2(int user_pin[PIN], int access_code[PIN], int *correct, int *incorrect);
+ int option3(int user_pin[PIN]);
+ int option4(int*, int*);
+ int option5();
+
+int main()
+{
+ int access_code[PIN]= {4,5,2,3};
+ int user_pin[PIN]= { };
+ int menu= 1;
+ int correct = 0;
+ int incorrect = 0;
+ int option=0;
+ int encrypt=0;
+
+ printf("\nWelcome, Please take a look at the following options\n");
+
+
+ while (option !=5 ) //while the option isnt 5 then print out the menu continuously until option 5 is entered 
+ { //print out the menu for user to choose an option 
+   printf("\nOption1 1: Enter a code\n");
+   printf("Option 2: Encrypt your code\n");
+   printf("Option 3: Decrypt your code\n");
+   printf("Option 4: Check how many times the code was entered  correctly and incorrectly\n");
+   printf("Option 5: Exit the program\n");
+   
+   printf("\nPlease enter an option\n");
+   
+   scanf("%d", &option); //scan the option the user just entered 
+
+   if ((option!=1)&& (option!=2)&&(option !=3)&& (option !=4)&&(option !=5)) //if the options isnt any of the 5 numbers then its invalid 
+   {
+     printf("\nPlease enter a valid option\n");
+   }//end if 
+
+ 
+    switch(option)
+    {
+      case 1 :
+      option1(user_pin); //passing the function 
+      break; //break or end case 1
+
+      case 2 :
+        if(encrypt==0)
+        {
+          option2(user_pin, access_code, &correct, &incorrect);//passing the function 
+          encrypt= encrypt + 1; 
+        } //end if
+        else 
+        {
+          printf("The code has been encrypted\n\n");
+        }//end ifelse
+      break;// break or end case 2
+
+      case 3 :
+        if(encrypt ==1)
+        {
+          option3(user_pin); //passing the function 
+          encrypt = encrypt -1;
+        } //end if
+        else 
+        {
+          printf("The code has been decrypted \n");
+
+        } //end ifelse
+      break; //end or break case 3
+
+      case 4 :
+      option4 (&correct, &incorrect);
+      break; //break or end case 4
+
+
+      case 5 :
+      option5 ();
+      break; //break or end case 5
+
+    } //end switch 
+}//end while 
+  return 0;
+} //End main 
+
+//first funtion will be option 1 to enter the code 
+int option1(int user_pin[PIN])
+{
+  int i;
+  int check_pin;
+
+  printf("Please enter a 4 digit pin\n");
+
+  //a for loop will be used to enter the numbers and store then in an array
+  for (i=0; i<PIN; i++)
+  {
+    scanf("%d", (&*(user_pin + i)));
+  } //end for loop
+  return *(user_pin+i);
+} //end of funtion 1 
+
+
+// Second functions will deal with option 2 which is to encrypt and verify if its already encrypted 
+int option2(int user_pin[PIN], int access_code[PIN], int *correct, int *incorrect)
+{
+  int pin;
+  int i;
+  int pins;
+
+  //swaping 1 and 3 for encryption 
+  pin = *(user_pin);
+  *(user_pin)= *(user_pin+2);
+  *(user_pin +2)= pin;
+
+  //Swaping 2 and 4 for encryption 
+  pin = *(user_pin+1);
+  *(user_pin) = *(user_pin +3);
+  *(user_pin+3) = pin;
+
+  // using a for loop to increment each one by 1 
+  for (i = 0; i<PIN; i++)
+  {
+    (*(user_pin +i))= (*(user_pin+i))+1;
+    
+    
+
+  }//end for 
+
+  for (i=0; i<PIN; i++)
+  {
+    printf("%d", *(user_pin+i));
+    if((*(user_pin+i)) > 9)
+    {
+      (*(user_pin +i))= 0;
+      
+      printf("Your Pin was succesfuly encrypted %d", *(user_pin+i)); 
+    }//end if
+  }//end for
+
+  //a third for loop to check for the pin the user entered and the access code
+  for (i=0; i<PIN; i++)
+  {
+    if( (*(user_pin + i))==(*(access_code + i)))
+    {
+      pins = pins + 1; 
+
+    }//end if
+  } //end for 
+  
+  //the if statement wil check id both of the codes entered are the same pin or code
+  if (pins == *(access_code))
+  {
+    (*(correct))= (*(correct))+1;
+    printf("\n The PIN entered is correct");
+  }//end if
+  else 
+  {
+    (*(incorrect))=(*(incorrect))+1;
+    printf("\n You entered the wrong PIN try again\n");
+  }
+
+}//end function 2
+
+//this third function will decrypt and display the pin or code entered 
+int option3(int user_pin[PIN])
+{
+  int i;
+  int change;
+
+  //this for loop will decress all of the numbers by one 
+  for (i=0; i<PIN; i++)
+  {
+    (*(user_pin))= (*(user_pin+i))-1;
+  }//end for 
+
+  //second for loop will check if the numbers one of them is -1 if so then it will go to 9 instead. 
+  for (i=0; i<PIN; i++)
+  {
+    if( (*(user_pin+i)) == -1)
+    {
+      
+      (*(user_pin))= 9;
+    
+    }//end if
+  
+  }//end for 
+
+  //this will swap the numbers again from 3 to 1 
+  change = *(user_pin);
+  *(user_pin)= *(user_pin+2);
+  *(user_pin+2) = change ; 
+  
+  //this will swap again the numbers 2 and 4 
+  change = *(user_pin+1);
+  *(user_pin+1) = *(user_pin+3);
+  *(user_pin+3)= change;
+
+  printf("\nthe decryption of the pin was successful\n");
+  printf("%d", change);
+
